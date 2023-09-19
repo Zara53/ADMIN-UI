@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import { Box, Stack } from "@mui/material";
@@ -21,7 +21,7 @@ import config from "../ipConfig.json";
 const UserList = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [users, setUsers] = useState([]);
-  const [rowLimit, setRowLimit] = useState(10);
+  const [rowLimit] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [found, setFound] = useState([]);
@@ -32,10 +32,6 @@ const UserList = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    searchUser();
-  }, [search]);
 
   const fetchData = async () => {
     const baseUrl = `${config.endpoint}`;
@@ -56,7 +52,7 @@ const UserList = () => {
    * Function to perform search based on 'search' prop's state change.
    */
 
-  const searchUser = () => {
+  const searchUser = useCallback(()=> {
     /**
      * Search users in all field
      * @param {User} User
@@ -77,7 +73,11 @@ const UserList = () => {
     });
 
     setFound(filteredUsers);
-  };
+  },[search, users]);
+
+  useEffect(() => {
+    searchUser();
+  }, [searchUser]);
 
   /**
    * Delete handle for each record in Table View
