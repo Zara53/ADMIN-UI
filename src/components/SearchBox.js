@@ -11,9 +11,9 @@ export default function SearchBox({ search, setSearch }) {
       onChange={(e) => setSearch(e.target.value)}
       variant="outlined"
       fullWidth={false}
-      style={{ width: "90%", marginLeft: "2rem", borderRadius: "2rem" }}
+      style={{ width: "93%", marginLeft: "2rem", borderRadius: "2rem" }}
       inputProps={{
-        style: { color: "red" }
+        style: { color: "red" },
       }}
     />
   );

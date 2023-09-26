@@ -1,7 +1,16 @@
 import React, { useCallback } from "react";
 import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
-import { Box, Stack } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import axios from "axios";
 import Header from "./Header";
 import TableView from "./TableView";
@@ -28,6 +37,7 @@ const UserList = () => {
   const [selectedEdit, setSelectedEdit] = useState(new Set());
   const [editData, setEditData] = useState({});
   const [selected, setSelected] = useState(new Set());
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -52,7 +62,7 @@ const UserList = () => {
    * Function to perform search based on 'search' prop's state change.
    */
 
-  const searchUser = useCallback(()=> {
+  const searchUser = useCallback(() => {
     /**
      * Search users in all field
      * @param {User} User
@@ -73,40 +83,51 @@ const UserList = () => {
     });
 
     setFound(filteredUsers);
-  },[search, users]);
+  }, [search, users]);
 
   useEffect(() => {
     searchUser();
   }, [searchUser]);
 
-  /**
-   * Delete handle for each record in Table View
-   *
-   * @param {number} id User ID
-   * @returns {undefined}
-   */
+  // Handle opening the delete confirmation dialog
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true);
+  };
 
-  const handleDelete = (id) => {
-    const filteredUsers = users.filter((user) => user.id !== id);
-    const filteredSearchResults = found.filter((user) => user.id !== id);
+  //Handle closing the delete confirmation dialog
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
 
-    try {
-      setUsers(filteredUsers);
-      setFound(filteredSearchResults);
-      enqueueSnackbar(`User Record with id=${id} has been deleted!`, {
-        variant: "error",
+  // Handle confirming the deletion of selected records
+  const handleConfirmDelete = () => {
+    if (selected.size === 0) {
+      enqueueSnackbar("No user record selected for deletion.", {
+        variant: "warning",
       });
-      return;
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setSelected(new Set());
+    } else {
+      const filteredUsers = users.filter((user) => !selected.has(user.id));
+      const filteredSearchResults = found.filter(
+        (user) => !selected.has(user.id)
+      );
+
+      try {
+        setUsers(filteredUsers);
+        setFound(filteredSearchResults);
+        enqueueSnackbar(" User records has been deleted successfully!", {
+          variant: "success",
+        });
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setSelected(new Set());
+      }
+      handleCloseDeleteDialog();
     }
   };
 
   /**
    * Loads the current record data from users with userId
-   *
    * @param {number} id User ID
    * @returns {undefined}
    */
@@ -119,9 +140,7 @@ const UserList = () => {
   };
 
   /**
-   *
    * Change in user data happens in-memory
-   *
    * @param {number} id userId
    * @returns {undefined}
    */
@@ -152,7 +171,6 @@ const UserList = () => {
 
   /**
    * Edit handle for each record in Table View
-   *
    * @param {number} id userId
    * @returns {undefined}
    */
@@ -176,7 +194,6 @@ const UserList = () => {
 
   /**
    * Handle changes of records which are open in edit mode
-   *
    * @param {object} e
    * @param {number} id userID
    * @param {string} key field of User record to be updated
@@ -192,8 +209,6 @@ const UserList = () => {
 
   /**
    * checkbox click and update
-   * add or delete clicked record
-   *
    * @param {number} id userId
    * @returns {undefined}
    */
@@ -210,8 +225,7 @@ const UserList = () => {
   };
 
   /**
-   * Add or delete all the current page rows to selected
-   *
+   * select all the current page user records to delete
    * @param {object} event window Event object
    * @returns {undefined}
    */
@@ -236,14 +250,14 @@ const UserList = () => {
     setSelected(newSelected);
   };
 
-  // handle to Delete Current Selected User Row
+  // handle to delete specific selected user row
 
   const handleDeleteSelected = () => {
     let deletetedCount = users.length;
     const filteredUsers = users.filter((user) => !selected.has(user.id));
     deletetedCount -= filteredUsers.length;
     const filteredSearchResults = found.filter(
-      (user) => !selected.has(user.id),
+      (user) => !selected.has(user.id)
     );
 
     try {
@@ -253,7 +267,7 @@ const UserList = () => {
         `${deletetedCount} User Records been deleted Successfully!`,
         {
           variant: "error",
-        },
+        }
       );
     } catch (e) {
       console.log(e);
@@ -262,7 +276,6 @@ const UserList = () => {
     }
   };
 
-  //  Main component
   return (
     <Stack
       className="user-list-container"
@@ -285,7 +298,7 @@ const UserList = () => {
           editData={editData}
           handleEdit={editUserData}
           handleEditChange={handleEditChange}
-          handleDelete={handleDelete}
+          handleDelete={handleDeleteSelected}
           handleCheckboxClick={handleCheckboxClick}
           handleSelectAllClick={SelectAllClick}
         />
@@ -297,9 +310,32 @@ const UserList = () => {
           rowLimit={rowLimit}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          handleDeleteSelected={handleDeleteSelected}
+          handleDeleteSelected={handleOpenDeleteDialog}
         />
       </Box>
+
+      {/* Delete Confirmation  */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete the selected user records?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Stack>
   );
 };

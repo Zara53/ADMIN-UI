@@ -27,16 +27,16 @@ export default function TableView({
   handleSelectAllClick,
 }) {
   // Implementing pagination
-
   const low = (currentPage - 1) * rowLimit;
   const high = currentPage * rowLimit;
 
   let subData = data.slice(low, high);
 
-  // This will be used to show inderminent on table header checkbox (The '-' icon when one or some items are selected)
-
-  let allCurrentSelected =
-    Array.isArray(subData) && subData.every((user) => selected.has(user.id));
+  // Determine if all items are selected
+  const allItemsSelected =
+    Array.isArray(subData) &&
+    subData.length > 0 &&
+    subData.every((user) => selected.has(user.id));
 
   /**
    * given User ID is in selected or not
@@ -101,17 +101,17 @@ export default function TableView({
           />
         </TableCell>
 
+        {/* Display the user ID in the cell*/}
+        <TableCell align="center">{user.id}</TableCell>
         {EditTableCell(user, "name")}
         {EditTableCell(user, "email")}
         <TableCell align="center">
           {selectedEdit.has(user.id) ? (
-            // Render the input field when in edit mode
             <Input
               value={editData[user.id].role}
               onChange={(e) => handleEditChange(e, user.id, "role")}
             />
           ) : (
-            // Render the capitalized role when not in edit mode
             user.role.charAt(0).toUpperCase() + user.role.slice(1)
           )}
         </TableCell>
@@ -154,18 +154,13 @@ export default function TableView({
    * Table of our User List View
    */
 
-  const TableHeader = ({
-    selected,
-    allCurrentSelected,
-    handleSelectAllClick,
-  }) => (
+  const TableHeader = ({ selected, handleSelectAllClick }) => (
     <TableHead>
       <TableRow>
         <TableCell align="center">
           <Checkbox
             color="primary"
-            indeterminate={selected.size > 0 && !allCurrentSelected}
-            checked={selected.size > 0 && allCurrentSelected}
+            checked={allItemsSelected}
             onClick={handleSelectAllClick}
             sx={{
               "&.Mui-checked": {
@@ -177,7 +172,9 @@ export default function TableView({
             }}
           />
         </TableCell>
-
+        <TableCell align="center">
+          <strong>ID</strong>
+        </TableCell>
         <TableCell align="center">
           <strong>Name</strong>
         </TableCell>
@@ -199,7 +196,6 @@ export default function TableView({
       <Table size="small">
         <TableHeader
           selected={selected}
-          allCurrentSelected={allCurrentSelected}
           handleSelectAllClick={handleSelectAllClick}
         />
 
