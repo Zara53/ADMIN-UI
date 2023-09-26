@@ -5,13 +5,14 @@ const Header = () => {
   const headerStyles = {
     textDecoration: "underline",
     cursor: "pointer",
-    marginLeft: "2rem",
     height: "36px",
     padding: "8px",
     paddingBottom: "0px",
     fontFamily: "Langar",
     fontSize: "30px",
-    color: "red"
+    color: "red",
+    display: "flex",
+    justifyContent: "center",
   };
 
   return (
