@@ -1,0 +1,28 @@
+.header {
+  color: var(--color-primary);
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  font-size: 50px;
+}
+
+.search {
+  margin-top: 10px;
+  height: 40px;
+  width: 100%;
+  border: 2px solid var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .header {
+    font-size: 30px;
+  }
+
+  .search {
+    margin-top: 10px;
+    height: 40px;
+    width: 100%;
+    border: 2px solid var(--color-primary);
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,67 @@
+.tableContainer {
+  overflow-x: auto;
+}
+
+table {
+  margin-top: 10px;
+  color: var(--color-black);
+  width: 100%;
+  border: 2px solid var(--color-primary);
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 2px solid var(--color-primary);
+  border-right: 2px solid var(--color-primary);
+}
+
+th {
+  background-color: rgba(128, 128, 128, 0.836);
+}
+
+.actionButton {
+  display: flex;
+  justify-content: center;
+}
+
+.button1 {
+  padding: 4px 10px;
+  border-radius: 5px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.button2 {
+  padding: 4px 10px;
+  border-radius: 5px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.button1:hover,
+.button2:hover {
+  background-color: var(--color-primary);
+}
+
+.checkbox {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+
+  th,
+  td {
+    padding: 8px;
+  }
+
+  .button1,
+  .button2 {
+    margin: 10px 0;
+  }
+}

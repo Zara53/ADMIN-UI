@@ -1,28 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
-import { SnackbarProvider } from "notistack";
-import { ThemeProvider } from "@mui/material/styles";
-import App from "./App";
-import theme from "./theme";
 import "./index.css";
+import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <SnackbarProvider
-        maxSnack={1}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        preventDuplicate
-      >
-        <App />
-      </SnackbarProvider>
-    </ThemeProvider>
-  </React.StrictMode>,
+    <App />
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

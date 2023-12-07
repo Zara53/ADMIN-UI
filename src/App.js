@@ -1,12 +1,7 @@
 import React from "react";
-import UserList from "./components/UserList";
-
+import Table from "./components/Table/Table";
 function App() {
-  return (
-    <div className="App">
-      <UserList />
-    </div>
-  );
+  return <Table />;
 }
 
 export default App;
