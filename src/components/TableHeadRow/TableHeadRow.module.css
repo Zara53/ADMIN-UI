@@ -52,12 +52,12 @@ th {
 
 @media (max-width: 768px) {
   table {
-    font-size: 14px;
+    font-size: 8px;
   }
 
   th,
   td {
-    padding: 8px;
+    padding: 4px;
   }
 
   .button1,
